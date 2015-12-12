@@ -1,11 +1,18 @@
+svg = null;
+line = null;
+xaxis = null;
+yaxis = null;
+
 function showPlot(sensorID, sensorPos, color, from, to) {
+    console.log("showPlot(" + sensorID + "," + sensorPos + "," + color + "," + from + "," + to + ");");
+
     if (color === null || color === undefined || color === '') {
         color = '#ff0000';
     }
 
     if (to === undefined) {
         to = Math.floor(Date.now() / 1000);
-    }else{
+    } else {
         to = parseInt(to);
     }
     if (from === undefined) {
@@ -43,20 +50,11 @@ function showPlot(sensorID, sensorPos, color, from, to) {
             });
     console.log(valueline);
 
-// Adds the svg canvas
-    var svg = d3.select("body")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
 
     //Get the data
     d3.csv("data.csv.php?id=" + sensorID + "&pos=" + sensorPos + '&from=' + from + '&to=' + to, function (data) {
-
-
 
 
         data.forEach(function (d) {
@@ -82,42 +80,70 @@ function showPlot(sensorID, sensorPos, color, from, to) {
             d3.max(dataset, function (d) {
                 return d.value;
             })]);
-        /*    
-         //original
-         svg.append("path")      // Add the valueline path.
-         .attr("d", valueline(dataset));
-         */
-        svg.append("path")      // Add the valueline path.
+
+        if (svg === null) {
+            svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom).append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        }else{
+            line.remove();
+            xaxis.remove();
+            yaxis.remove();
+        }
+
+
+        line = svg.append("path")      // Add the valueline path.
                 .attr("d", valueline(dataset))
                 .attr("stroke", color)
                 .attr("fill", "none");
 
-        /*
-         svg.append("path").attr("d", valueline(dataset.filter(function(d) {
-         return d.x <= 15;
-         })))
-         .attr("stroke", "blue")
-         .attr("stroke-width", 2)
-         .attr("fill", "none");
-         
-         
-         svg.append("path").attr("d", valueline(dataset.filter(function(d) {
-         return d.x > 15;
-         })))
-         .attr("stroke", "red")
-         .attr("stroke-width", 2)
-         .attr("fill", "none");
-         */
 
-        svg.append("g")         // Add the X Axis
+
+        xaxis = svg.append("g")         // Add the X Axis
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
                 .call(xAxis);
 
-        svg.append("g")         // Add the Y Axis
+        yaxis = svg.append("g")         // Add the Y Axis
                 .attr("class", "y axis")
                 .call(yAxis);
 
+
+
     });
 
+}
+
+
+/**
+ * Plot again based on form options.
+ * Called onSubmit of replot options form
+ * 
+ * @returns {false} we don't want to send the form
+ */
+function replot(sensorID, sensorPos, color) {
+
+    var newFromTime = timeH2U(document.getElementById('replotForm_fromTime').value);
+    var newToTime = timeH2U(document.getElementById('replotForm_toTime').value);
+    if (newFromTime === false || newToTime === false) {
+        throw "Bad datetime";
+    }
+
+
+    showPlot(sensorID, sensorPos, color, newFromTime, newToTime);
+
+    return false;
+}
+
+/* Convert DATETIME in format YYYY-MM-DD HH:II to timestamp*/
+function timeH2U(dtime) {
+    //todo: check dtime against regexp,return false if not successful.
+
+    var myDate = dtime.split(" ");
+    var date = myDate[0].split("-");
+    var time = myDate[1].split(":");
+
+    return new Date(date[0], date[1] - 1, date[2], time[0], time[1]).getTime() / 1000;
 }

@@ -67,5 +67,12 @@ $fromTime->sub(new DateInterval('PT24H'));
 
 $tpl_content.="<script type=\"text/javascript\">\n";
 $tpl_content.="showPlot(" . $sensorID . "," . $sensorPos . ",'" . $sensorRow['color'] . "'," . $fromTime->getTimestamp() . "," . $toTime->getTimestamp() . ");";
-$tpl_content.="</script>\n";
+$tpl_content.="</script>\n"; 
+
+$tpl_content.="<form action=\"#\" onsubmit=\"return replot(" . $sensorID . "," . $sensorPos . ",'" . $sensorRow['color'] . "');\">";
+$tpl_content.="<input type=\"text\" id=\"replotForm_fromTime\" value=\"".$fromTime->format("Y-m-d H:i")."\">\n";
+$tpl_content.="<input type=\"text\" id=\"replotForm_toTime\" value=\"".$toTime->format("Y-m-d H:i")."\">\n";
+$tpl_content.="<input type=\"submit\" value=\"Apply\">\n";
+$tpl_content.="</form>"
+
 ?>
