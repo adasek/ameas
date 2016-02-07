@@ -87,7 +87,7 @@ function showPlot(sensorID, sensorPos, color, from, to) {
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom).append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        }else{
+        } else {
             line.remove();
             xaxis.remove();
             yaxis.remove();
