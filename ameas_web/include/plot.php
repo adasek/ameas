@@ -63,16 +63,20 @@ $tpl_content.="" . $sensorRow['valueTypeName'] . "</h1>";
 $tpl_content.="<h2>" . $lastValue . " at " . $lastValueTime . "</h2>";
 $toTime = new Datetime();
 $fromTime = clone $toTime;
-$fromTime->sub(new DateInterval('PT24H')); 
+$fromTime->sub(new DateInterval('PT24H'));
 
 $tpl_content.="<script type=\"text/javascript\">\n";
 $tpl_content.="showPlot(" . $sensorID . "," . $sensorPos . ",'" . $sensorRow['color'] . "'," . $fromTime->getTimestamp() . "," . $toTime->getTimestamp() . ");";
-$tpl_content.="</script>\n"; 
+$tpl_content.="</script>\n";
 
 $tpl_content.="<form action=\"#\" onsubmit=\"return replot(" . $sensorID . "," . $sensorPos . ",'" . $sensorRow['color'] . "');\">";
-$tpl_content.="<input type=\"text\" id=\"replotForm_fromTime\" value=\"".$fromTime->format("Y-m-d H:i")."\">\n";
-$tpl_content.="<input type=\"text\" id=\"replotForm_toTime\" value=\"".$toTime->format("Y-m-d H:i")."\">\n";
+$tpl_content.="<input type=\"text\" id=\"replotForm_fromTime\" value=\"" . $fromTime->format("Y-m-d H:i") . "\">\n";
+$tpl_content.="<input type=\"text\" id=\"replotForm_toTime\" value=\"" . $toTime->format("Y-m-d H:i") . "\">\n";
+
+//insert 
+$tpl_content.="<script type=\"text/javascript\">var datepickerOps=new Object({
+  format:'Y-m-d H:i'});jQuery('#replotForm_fromTime').datetimepicker(datepickerOps);jQuery('#replotForm_toTime').datetimepicker(datepickerOps);</script>\n";
+
 $tpl_content.="<input type=\"submit\" value=\"Apply\">\n";
 $tpl_content.="</form>"
-
 ?>
