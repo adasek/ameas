@@ -66,6 +66,7 @@ $fromTime = clone $toTime;
 $fromTime->sub(new DateInterval('PT24H'));
 
 $tpl_content.="<script type=\"text/javascript\">\n";
+
 $tpl_content.="showPlot(" . $sensorID . "," . $sensorPos . ",'" . $sensorRow['color'] . "'," . $fromTime->getTimestamp() . "," . $toTime->getTimestamp() . ");";
 $tpl_content.="</script>\n";
 

@@ -1,6 +1,6 @@
 <?php
 
-header('Content-Type: text/csv');
+header('Content-Type: application/json');
 
 include_once('config.php');
 include_once('include/connection.php');
@@ -25,15 +25,6 @@ if (is_numeric($_GET['pos'])) {
     exit();
 }
 
-/* Last day = default */
-$timeStart = date("Y-m-d H:i:s", time() - 86400);
-$timeEnd = date("Y-m-d H:i:s");
-if (is_numeric($_GET['from'])) {
-    $timeStart = date("Y-m-d H:i:s", $_GET['from']);
-}
-if (is_numeric($_GET['to'])) {
-    $timeEnd = date("Y-m-d H:i:s", $_GET['to']);
-}
 
 $qu = $mysqli->query("SELECT val,UNIX_TIMESTAMP(TIME) AS t
   FROM Measurement
@@ -44,9 +35,9 @@ $qu = $mysqli->query("SELECT val,UNIX_TIMESTAMP(TIME) AS t
 
 
 $first = 1;
-echo "time,value\n";
 while ($row = $qu->fetch_array()) {
-    echo ($row['t']) . ",";
-    echo $row['val'] . "\n";
+    echo "{";
+    echo "\"time\":" . ($row['t']) . ",";
+    echo "\"value\":" . $row['val'];
+    echo "}\n";
 }
-?>

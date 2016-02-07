@@ -20,6 +20,9 @@ function showPlot(sensorID, sensorPos, color, from, to) {
         from = parseInt(from);
     }
 
+    var fromDate = new Date(from * 1000);
+    var toDate = new Date(to * 1000);
+
 
 
     var margin = {top: 20, right: 20, bottom: 30, left: 100},
@@ -51,11 +54,11 @@ function showPlot(sensorID, sensorPos, color, from, to) {
     console.log(valueline);
 
 
+    var sensor = new SensorData(sensorID, sensorPos, function () {});
 
-
-    //Get the data
-    d3.csv("data.csv.php?id=" + sensorID + "&pos=" + sensorPos + '&from=' + from + '&to=' + to, function (data) {
-
+    var showData = new SensorDataSet(sensor, fromDate, toDate, function () {
+        /* data loaded */
+        var data = this.getDataD3();
 
         data.forEach(function (d) {
             d.time = d.time * 1000;
@@ -99,8 +102,6 @@ function showPlot(sensorID, sensorPos, color, from, to) {
                 .attr("stroke", color)
                 .attr("fill", "none");
 
-
-
         xaxis = svg.append("g")         // Add the X Axis
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -110,9 +111,8 @@ function showPlot(sensorID, sensorPos, color, from, to) {
                 .attr("class", "y axis")
                 .call(yAxis);
 
-
-
     });
+
 
 }
 
@@ -135,15 +135,4 @@ function replot(sensorID, sensorPos, color) {
     showPlot(sensorID, sensorPos, color, newFromTime, newToTime);
 
     return false;
-}
-
-/* Convert DATETIME in format YYYY-MM-DD HH:II to timestamp*/
-function timeH2U(dtime) {
-    //todo: check dtime against regexp,return false if not successful.
-
-    var myDate = dtime.split(" ");
-    var date = myDate[0].split("-");
-    var time = myDate[1].split(":");
-
-    return new Date(date[0], date[1] - 1, date[2], time[0], time[1]).getTime() / 1000;
 }
