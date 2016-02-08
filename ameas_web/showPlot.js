@@ -2,6 +2,8 @@ svg = null;
 line = null;
 xaxis = null;
 yaxis = null;
+plot = null;
+sensor = null;
 
 function showPlot(sensorID, sensorPos, color, from, to) {
     console.log("showPlot(" + sensorID + "," + sensorPos + "," + color + "," + from + "," + to + ");");
@@ -25,94 +27,20 @@ function showPlot(sensorID, sensorPos, color, from, to) {
 
 
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 100},
-    width = 1020 - margin.left - margin.right,
-            height = 600 - margin.top - margin.bottom;
+
+    plot = new Plot("body");
 
 
 
-// Set the ranges
-    var x = d3.time.scale().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
-
-// Define the axes
-    var xAxis = d3.svg.axis().scale(x)
-            .orient("bottom").ticks(5)
-            .tickFormat(d3.time.format("%d.%m. %H:%M"));
-
-    var yAxis = d3.svg.axis().scale(y)
-            .orient("left").ticks(5);
-
-// Define the line
-    var valueline = d3.svg.line()
-            .x(function (d) {
-                return x(d.time);
-            })
-            .y(function (d) {
-                return y(d.value);
-            });
-    console.log(valueline);
-
-
-    var sensor = new SensorData(sensorID, sensorPos, function () {});
+    sensor = new SensorData(sensorID, sensorPos, function () {});
 
     var showData = new SensorDataSet(sensor, fromDate, toDate, function () {
-        /* data loaded */
-        var data = this.getDataD3();
 
-        data.forEach(function (d) {
-            d.time = d.time * 1000;
-            d.value = +d.value;
-        });
-
-        dataset = data;
-
-
-        // Scale the range of the data      
-        var x_ext = d3.extent(dataset, function (d) {
-            return d.time;
-        });
-        console.log(x_ext);
-        x.domain(d3.extent(dataset, function (d) {
-            return d.time;
-        }));
-        y.domain([
-            d3.min(dataset, function (d) {
-                return d.value;
-            }),
-            d3.max(dataset, function (d) {
-                return d.value;
-            })]);
-
-        if (svg === null) {
-            svg = d3.select("body")
-                    .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom).append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        } else {
-            line.remove();
-            xaxis.remove();
-            yaxis.remove();
-        }
-
-
-        line = svg.append("path")      // Add the valueline path.
-                .attr("d", valueline(dataset))
-                .attr("stroke", color)
-                .attr("fill", "none");
-
-        xaxis = svg.append("g")         // Add the X Axis
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-        yaxis = svg.append("g")         // Add the Y Axis
-                .attr("class", "y axis")
-                .call(yAxis);
+        //Add dataset to plot
+        plot.datasets = [this];
+        plot.plot();
 
     });
-
 
 }
 
@@ -125,14 +53,19 @@ function showPlot(sensorID, sensorPos, color, from, to) {
  */
 function replot(sensorID, sensorPos, color) {
 
-    var newFromTime = timeH2U(document.getElementById('replotForm_fromTime').value);
-    var newToTime = timeH2U(document.getElementById('replotForm_toTime').value);
-    if (newFromTime === false || newToTime === false) {
+    var newFromDate = sensor.timestr2date(document.getElementById('replotForm_fromTime').value);
+    var newToDate = sensor.timestr2date(document.getElementById('replotForm_toTime').value);
+    if (newFromDate === false || newToDate === false) {
         throw "Bad datetime";
     }
 
+    
+    showData = new SensorDataSet(sensor, newFromDate, newToDate, function () {
+        //Add dataset to plot
+        plot.datasets = [this];
+        plot.plot();
+    });
 
-    showPlot(sensorID, sensorPos, color, newFromTime, newToTime);
 
     return false;
 }
