@@ -19,9 +19,6 @@
 #include <math.h>   
 #include <linux/i2c.h>   
 #include <linux/i2c-dev.h> 
-//#include "linux/i2c-dev.h" 
-//#include <i2c/smbus.h>
-//#include "i2c-func.h"
 
 
 static int i2c_wr1B(int file,unsigned char addr, unsigned char data) {
@@ -65,15 +62,6 @@ static int i2c_rd2B(int file,unsigned char addr, unsigned char * data) {
     data[0] = buf[0];
     data[1] = buf[1];
   
-/*
-printf("0x%02X,0x%02X,0x%02X,0x%02X\n",
- (unsigned int)(buf[0] & 0xFF),
- (unsigned int)(buf[1] & 0xFF),
- (unsigned int)(buf[2] & 0xFF),
- (unsigned int)(buf[3] & 0xFF) 
-);
-*/
-
     return 0;
 }
 

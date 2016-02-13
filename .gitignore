@@ -1,3 +1,13 @@
-openwrt/*
-!openwrt/package/utils/asensor
+openwrt/*    
+!openwrt/package/  
+openwrt/package/*
+!openwrt/package/utils/
+ 
+openwrt/package/utils/*     
+!openwrt/package/utils/alcd/   
+!openwrt/package/utils/alcd/*
+!openwrt/package/utils/asensor/  
 !openwrt/package/utils/asensor/*
+ 
+openwrt/package/utils/asensor/nbproject
+openwrt/package/utils/alcd/nbproject

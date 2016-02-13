@@ -18,7 +18,6 @@
 #include <linux/i2c.h>   
 #include <linux/i2c-dev.h>   
 #include <sys/ioctl.h>
-#include "i2c-func.h"
      
 #define OSS 3 //high resolution   
 #define WAIT_TIME 26000 //high resolution wait
