@@ -44,7 +44,12 @@ int setDirection(int gpio, int dir){
   // Direction descriptor
           sprintf(buf, "/sys/class/gpio/gpio%d/direction", gpio);
           directionFileDescriptor = open(buf, O_WRONLY);   
-          
+if(directionFileDescriptor<0)
+{
+fprintf(stderr,"Could not open %s\n",buf);
+return 1;
+}          
+
   if(dir==1){
          write(directionFileDescriptor, "out", 3);
   }else if(dir==0){
@@ -71,7 +76,10 @@ void startSignal(int gpio){
   //open GPIO port
   sprintf(buf, "/sys/class/gpio/gpio%d/value", gpio);
   gpioFileDescriptor = open(buf, O_WRONLY);
-
+if(gpioFileDescriptor<0)
+{
+fprintf(stderr,"Could not open %s\n",buf);
+}          
         
   setDirection(gpio, 1);
                                      
@@ -85,9 +93,9 @@ void startSignal(int gpio){
     setDirection(gpio, 0);     
 }
    
-int meas(int gpio,uint8_t * out, int deviceType){ 
+int meas(int gpio,uint8_t * out){ 
 unsigned long times[85]; //85            
-char c=(char)0;  //  
+char c=(char)0;   
 int allCounter=0; 
 int counter=0;  
 int changes=0;
@@ -99,6 +107,8 @@ char buf[80];
 char stat;                   
 struct timeval t0;
 int r_ret;
+
+
              
 /* Intialize an array */
 for(i=0;i<5;i++){
@@ -108,6 +118,10 @@ for(i=0;i<5;i++){
 //open GPIO port READ     
 sprintf(buf, "/sys/class/gpio/gpio%d/value", gpio);
 gpioFileDescriptor = open(buf, O_RDONLY);
+if(gpioFileDescriptor<0)
+{
+fprintf(stderr,"Could not open %s\n",buf);
+}          
     
                 
         while(allCounter++<50000){
@@ -134,7 +148,7 @@ gpioFileDescriptor = open(buf, O_RDONLY);
          }       
          
         }
-              
+
         close(gpioFileDescriptor);
         
         //aggregate times array
@@ -159,6 +173,7 @@ gpioFileDescriptor = open(buf, O_RDONLY);
            counter++;
           }
         }
+
         
        //  printf("%02x %02x %02x %02x %02x\n",out[0],out[1],out[2],out[3],out[4]);
           //verify checksum
@@ -196,8 +211,7 @@ int convertData(uint8_t * data,float * temperature, float * humidity){
 
 int main(int argc, char * * argv)
 {     
-  int gpio = atoi(argv[1]);  
-  int deviceType = atoi(argv[2]);  
+  int gpio = atoi(argv[1]); 
   int i; 
   int fd; //sys class gpio export descriptor   
   char buf[100];
@@ -205,11 +219,22 @@ int main(int argc, char * * argv)
   float hum;   
   uint8_t data[5];  
   int retVal=0;
+
   
   if(argc<1){
   printf("Not enough arguments... first argument should be no. of pin");
   return 1;
   }    
+
+#ifdef DHT11
+
+#elif defined(DHT22)
+
+#else
+fprintf(stderr,"Wrong device type defined in build\n");
+return 13;
+#endif
+
   if(gpio<0 || gpio>30){
      printf("I don't know about this pin %d. Exitting.",gpio);
      return 3;
@@ -220,13 +245,20 @@ int main(int argc, char * * argv)
    //Export the gpio pin
   fd = open("/sys/class/gpio/export", O_WRONLY);
   sprintf(buf, "%d", gpio); 
+if(fd<0)
+{
+fprintf(stderr,"Could not open %s\n",buf);
+return 5;
+}          
   write(fd, buf, strlen(buf));
   close(fd); 
            
             
  startSignal(gpio);
- 
- if(meas(gpio,data,deviceType) && convertData(data,&temp,&hum)){
+
+
+
+ if(meas(gpio,data) && convertData(data,&temp,&hum)){
     printf("%f %f\n",hum,temp);
     retVal=0;
    }else{
