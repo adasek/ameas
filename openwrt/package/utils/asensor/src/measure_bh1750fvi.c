@@ -19,51 +19,8 @@
 #include <math.h>   
 #include <linux/i2c.h>   
 #include <linux/i2c-dev.h> 
+#include "i2c_functions.h" 
 
-
-static int i2c_wr1B(int file,unsigned char addr, unsigned char data) {
-    unsigned char inbuf, outbuf;
-    struct i2c_rdwr_ioctl_data packets;
-    struct i2c_msg messages[1];
-
-    outbuf = data;
-    messages[0].addr  = addr;
-    messages[0].flags = 0;
-    messages[0].len   = sizeof(outbuf);
-    messages[0].buf   = &outbuf;
-
-    /* Send the request to the kernel and get the result back */
-    packets.msgs      = messages;
-    packets.nmsgs     = 1;
-    if(ioctl(file, I2C_RDWR, &packets) < 0) {
-        return 1;
-    }
-
-    return 0;
-}
-
-static int i2c_rd2B(int file,unsigned char addr, unsigned char * data) {
-    unsigned char buf[4];
-    struct i2c_rdwr_ioctl_data packets;
-    struct i2c_msg messages[1];
-	
-
-    messages[0].addr  = addr;
-    messages[0].flags = I2C_M_RD;
-    messages[0].len   = 4;
-    messages[0].buf   = buf;
-
-    /* Send the request to the kernel and get the result back */
-    packets.msgs      = messages;
-    packets.nmsgs     = 1;
-    if(ioctl(file, I2C_RDWR, &packets) < 0) {
-        return 1;
-    }
-    data[0] = buf[0];
-    data[1] = buf[1];
-  
-    return 0;
-}
 
 
 int main(int argc, char * * argv)

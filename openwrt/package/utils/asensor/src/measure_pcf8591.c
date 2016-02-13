@@ -17,7 +17,7 @@
 #include <linux/i2c.h>   
 #include <linux/i2c-dev.h>   
 #include <sys/ioctl.h>
-#include "i2c-func.h"    
+#include "i2c_functions.h"    
 #include <inttypes.h> //uint8_t  
 #include <unistd.h>  //usleep
      
