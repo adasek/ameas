@@ -1,0 +1,3 @@
+openwrt/*
+!openwrt/package/utils/asensor
+!openwrt/package/utils/asensor/*
