@@ -1,13 +1,16 @@
-openwrt/*    
-!openwrt/package/  
+#Ignore all except my packages
+#alcd, asensor, adisp
+
+openwrt/*
+!openwrt/package
 openwrt/package/*
-!openwrt/package/utils/
+openwrt/package/*/
+!openwrt/package/utils
+openwrt/package/utils/*
+openwrt/package/utils/*/
+!openwrt/package/utils/alcd/
+!openwrt/package/utils/asensor/ 
+!openwrt/package/utils/adisp/ 
  
-openwrt/package/utils/*     
-!openwrt/package/utils/alcd/   
-!openwrt/package/utils/alcd/*
-!openwrt/package/utils/asensor/  
-!openwrt/package/utils/asensor/*
- 
-openwrt/package/utils/asensor/nbproject
-openwrt/package/utils/alcd/nbproject
+openwrt/package/utils/asensor/nbproject/
+openwrt/package/utils/alcd/nbproject/
