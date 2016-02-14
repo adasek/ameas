@@ -1,10 +1,6 @@
-#!/bin/ash
+#!/bin/sh
 
-#List of enabled plugins in file plugins.txt
-PROGRAMDIR="/root/disp"
-PLUGIN_LIST="$PROGRAMDIR"/plugins.txt
-TIME_SHOW=5 #time to show one screen (two lines) in seconds    
-
+source /etc/adisp.conf
 
 while read -r line || [ -n "$line" ]
 do
@@ -21,10 +17,10 @@ if [ "" = "$cmd" ]
  then
   #empty line
   continue;
-elif [ -r "$PROGRAMDIR"/plugins/"$cmd" ]
+elif [ -r "$PLUGIN_DIR"/"$cmd" ]
  then
   #there is some readable script
-  output=`"$PROGRAMDIR"/plugins/"$cmd" 2>/tmp/err$$`
+  output=`"$PLUGIN_DIR"/"$cmd" 2>/tmp/err$$`
   retCode=$?
    if [ $retCode -ne 0 ]
     then
@@ -44,7 +40,7 @@ elif [ -r "$PROGRAMDIR"/plugins/"$cmd" ]
    secondLine=`echo "$output"|head -n 2|tail -n 1` #get second line
     
     #show on display
-    if lcd1602 2 "$firstLine                    " "$secondLine                    "
+    if $LCD_BIN 2 "$firstLine                    " "$secondLine                    "
        then
        :
        else

@@ -37,10 +37,13 @@ endef
    
 
 define Package/adisp/install
-	$(INSTALL_DIR) $(1)/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/show.sh $(1)/sbin/adisp     
+	$(INSTALL_DIR) $(1)/sbin                                
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/adisp.sh $(1)/sbin/adisp     
 	$(INSTALL_DIR) $(1)/usr/share/adisp-plugins 
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/plugins/* $(1)/usr/share/adisp-plugins/          
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/plugins/* $(1)/usr/share/adisp-plugins/   
+	$(INSTALL_DIR) $(1)/etc                                                  
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/adisp.conf $(1)/etc/adisp.conf     
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/adisp.plugins $(1)/etc/adisp.plugins         
 endef
 
 $(eval $(call BuildPackage,adisp))
