@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=01
+
+
+start() {
+processId=`ps | grep "adisp-loop" |grep -v "grep" | tr -s " " | sed -e 's/^ *//' |cut -d" " -f 1 | head -n 1`
+    if [ -n "$processId" -a "$processId" -eq "$processId" ] 2>/dev/null
+     then 
+      echo "Process already running" >&2
+      return 2;
+     else
+       (/sbin/adisp-loop) &
+     fi
+}
+
+stop() {
+    processId=`ps | grep "adisp-loop" |grep -v "grep"  | tr -s " " | sed -e 's/^ *//' |cut -d" " -f 1 | head -n 1`
+    if [ -n "$processId" -a "$processId" -eq "$processId" ] 2>/dev/null
+     then 
+      #is numeric
+     kill $processId;
+     else
+     echo "Process was not running." >&2
+    fi
+}

@@ -38,12 +38,39 @@ endef
 
 define Package/adisp/install
 	$(INSTALL_DIR) $(1)/sbin                                
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/adisp.sh $(1)/sbin/adisp     
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/adisp.sh $(1)/sbin/adisp   
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/adisp-loop.sh $(1)/sbin/adisp-loop      
 	$(INSTALL_DIR) $(1)/usr/share/adisp-plugins 
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/plugins/* $(1)/usr/share/adisp-plugins/   
-	$(INSTALL_DIR) $(1)/etc                                                  
+	$(INSTALL_DIR) $(1)/etc                         
+	$(INSTALL_DIR) $(1)/etc/init.d                                       
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/adisp.conf $(1)/etc/adisp.conf     
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/adisp.plugins $(1)/etc/adisp.plugins         
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/adisp.plugins $(1)/etc/adisp.plugins               
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/adisp-init $(1)/etc/init.d/adisp          
 endef
+
+define Package/adisp/postinst
+#!/bin/sh
+# check if we are on real system
+if [ -z "$${IPKG_INSTROOT}" ]; then
+  echo "Enabling adisp-loop as service"
+  /etc/init.d/adisp enable
+fi
+exit 0
+endef
+
+
+define Package/adisp/prerm
+#!/bin/sh
+# check if we are on real system
+if [ -z "$${IPKG_INSTROOT}" ]; then
+  echo "Stopping adisp-loop"
+  /etc/init.d/adisp stop
+  echo "Disabling adisp-loop as service"
+  /etc/init.d/adisp disable
+fi
+exit 0
+endef
+
 
 $(eval $(call BuildPackage,adisp))
