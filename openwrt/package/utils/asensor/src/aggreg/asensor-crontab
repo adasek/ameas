@@ -1,0 +1,1 @@
+* * * * * /sbin/measure.sh 2>> /var/log/measure.err.log; /sbin/upload.sh 2>> /var/log/upload.err.log

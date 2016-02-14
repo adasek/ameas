@@ -17,7 +17,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/alcd
   SECTION:=utils
   CATEGORY:=Utilities
-  MAINTAINER:=Adam Benda<bendaad1@fit.cvut.cz>
+  MAINTAINER:=Adam Benda<adam@adasek.cz>
   TITLE:=alcd
   DEPENDS:=+i2c-tools +libstdcpp 
 endef

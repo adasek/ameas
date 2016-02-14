@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
                           
 PKG_NAME:=asensor
-PKG_VERSION:=0.5
+PKG_VERSION:=0.51
 PKG_RELEASE:=1
 
 PKG_LICENSE:=MIT
@@ -18,7 +18,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/asensor
   SECTION:=utils
   CATEGORY:=Utilities
-  MAINTAINER:=Adam Benda<bendaad1@fit.cvut.cz>
+  MAINTAINER:=Adam Benda<adam@adasek.cz>
   TITLE:=asensor
   DEPENDS:=+i2c-tools +libstdcpp 
 endef
@@ -46,7 +46,9 @@ define Package/asensor/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/milisleep $(1)/sbin/          
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/measure_dalas.sh $(1)/sbin/measure_dalas
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/measure.sh $(1)/sbin/measure.sh
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/upload.sh $(1)/sbin/upload.sh
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/upload.sh $(1)/sbin/upload.sh  
+	$(INSTALL_DIR) $(1)/etc/crontabs 
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/asensor-crontab $(1)/etc/crontabs/asensor-crontab
 endef
 
 $(eval $(call BuildPackage,asensor))
