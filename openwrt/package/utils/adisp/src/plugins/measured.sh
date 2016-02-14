@@ -1,4 +1,10 @@
-#!/bin/ash
+#!/bin/sh
+#
+# Plugin for adisp for displaying measured values
+# Author: Adam Benda, 2016
+# License: MIT 
+# https://github.com/adasek/ameas/
+#
 #this file is not in utf-8
 #beware symbol for degress
 # should be byte of dec value 223

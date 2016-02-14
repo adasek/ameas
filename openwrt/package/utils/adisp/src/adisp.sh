@@ -1,4 +1,14 @@
 #!/bin/sh
+#
+# Adisp main program - sequentially runs plugins from the list 
+# and display their output to LCD - divided into two-line messages
+#
+# Author: Adam Benda, 2016
+# License: MIT 
+# https://github.com/adasek/ameas/
+#
+#
+#
 
 source /etc/adisp.conf
 
