@@ -1,0 +1,12 @@
+#Ameas - web interface to show 
+
+### Requirements
+ * Apache 2.4.7
+ * PHP 5.5.9
+ * MySQL 5.5.47  
+ (These versions were tested un Ubuntu 14.04 server)
+
+### Installation
+ * Follow procedure from ameas-server to install database
+ * Put this project into your HTTP server htdocs
+ * Change config.php - set your database credentials (use user ameas!)   

@@ -26,3 +26,10 @@ PHP+Javascript server for visualisation of measured data
  * ameas_web
 
 This project begun as part of my bachelor thesis on The Faculty of Information Technology of the Czech Technical University in Prague.  
+
+
+## Installation
+See README in parts to see installation procedure.
+
+##### OpenWRT package installation
+ 
