@@ -15,5 +15,5 @@ no-pty,no-port-forwarding,no-agent-forwarding,no-X11-forwarding,command="~/ameas
 123 being the device id.
 
  * Inside MySQL create database "ameas" and user "ameas" and grant permissions.
- * Import ameas_database_schema.sql
+ * Import ameas_db.sql
  * In script "ameas_data" change configuration of database (MYSQL_SERVER,MYSQL_DB,MYSQL_USER,MYSQL_PASS)  
