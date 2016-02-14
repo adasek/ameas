@@ -65,7 +65,7 @@ while read sensor   #foreach sensor
     if [ $successful -ge $MIN_MEASUREMENTS ]
      then
        #make an average from values
-       echo "$values"|awk 'BEGIN {RS=";";maxNF=0;} {for(i=1;i<=NF;i++){vals[i]+=$i;num[i]++;}} END{for (i in vals){print (vals[i]/num[i]);}}'
+       value=`echo "$values"|awk 'BEGIN {RS=";";maxNF=0;} {for(i=1;i<=NF;i++){vals[i]+=$i;num[i]++;}} END{for (i in vals){print (vals[i]/num[i]);}}'`
 
         lock "$DATAFILE".lock
 
