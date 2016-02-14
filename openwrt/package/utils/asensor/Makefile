@@ -47,8 +47,19 @@ define Package/asensor/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/measure_dalas.sh $(1)/sbin/measure_dalas
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/measure.sh $(1)/sbin/measure.sh
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/upload.sh $(1)/sbin/upload.sh  
-	$(INSTALL_DIR) $(1)/etc/crontabs 
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/asensor-crontab $(1)/etc/crontabs/asensor-crontab
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aggreg/postinstall_add_to_crontab $(1)/sbin/postinstall_add_to_crontab
 endef
+
+
+define Package/asensor/postinst
+#!/bin/sh
+# check if we are on real system
+if [ -z "$${IPKG_INSTROOT}" ]; then
+  (. /sbin/postinstall_add_to_crontab)
+  rm -f /sbin/postinstall_add_to_crontab
+fi
+exit 0
+endef
+
 
 $(eval $(call BuildPackage,asensor))
