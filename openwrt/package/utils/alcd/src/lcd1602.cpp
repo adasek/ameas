@@ -20,7 +20,9 @@
 
 
 #include <stdio.h>  
-#include <stdlib.h>   /* atoi */
+#include <stdlib.h>   // atoi 
+#include <unistd.h>  //usleep
+#include <string.h> //strcpy,memcpy
 #include "LiquidCrystal_I2C/LiquidCrystal_I2C.h"
 
 
@@ -63,12 +65,33 @@ int main(int argc, char * * argv) {
                 print_usage();
                 return 0;
             }
+
             lcd.internalBegin(16, 2);
-            lcd.display();
-            lcd.home();
-            //lcd.cursor();     
-            lcd.setCursor(0, 0);
-            lcd.print(argv[2]);
+
+            //lcd.cursor();
+            char showLine1[17];
+            showLine1[16] = (char) 0;
+            int i_low = 0;
+            int i_high = 0;
+            while (true) {
+                if ((int) argv[2][i_high] == 0) {
+                    //end of string
+                    break;
+                }
+                ++i_high;
+                if (i_high - i_low > 16) { //visible symbols number
+                    ++i_low;
+                }
+
+                lcd.display();
+                lcd.home();
+                lcd.setCursor(0, 0);
+
+                mempcpy(showLine1, &(argv[2][i_low]),16);
+               lcd.print(showLine1);
+                usleep(10000);
+            }
+
             if (cmd == 2) {
 
                 if (argc < 4) {
