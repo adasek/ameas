@@ -2,8 +2,8 @@ all: compile
 
 compile: lcd1602    
 
-lcd1602_c: LiquidCrystal_I2C 
-	$(CXX) $(CXXFLAGS) -o lcd1602.o -c lcd1602.c   # -li2c 
+lcd1602_cpp: LiquidCrystal_I2C 
+	$(CXX) $(CXXFLAGS) -o lcd1602.o -c lcd1602.cpp
                   
 arduinoPrint:   
 	$(CXX) -g -O $(CXXFLAGS) -o print.o  -c LiquidCrystal_I2C/Print.cpp 
@@ -18,7 +18,7 @@ LiquidCrystal_I2C: I2CIO LCD arduinoPrint
 	$(CXX) -g -O $(CXXFLAGS) -o LiquidCrystal_I2C.o  -c LiquidCrystal_I2C/LiquidCrystal_I2C.cpp  
      
             
-lcd1602: lcd1602_c
+lcd1602: lcd1602_cpp
 	$(CXX) -g $(LDFLAGS) -o lcd1602 print.o I2CIO.o LCD.o LiquidCrystal_I2C.o lcd1602.o
                
 
