@@ -1,0 +1,77 @@
+#!/bin/bash
+
+LOCKFILE2="/tmp/ameas-data.lock"      
+LOGFILE="/tmp/ameas.log"
+UPLOADDIR=/home/ameas/uploaded_files
+
+MYSQL_SERVER=localhost      
+MYSQL_DB=ameas
+MYSQL_USER=ameas      
+MYSQL_PASS=
+
+echo `date`"ameas data script $$ started." >> "$LOGFILE"
+
+good=0
+  for f in "$UPLOADDIR"/*_*.data
+   do    
+     if echo "$f"|grep -q "\*.data$"
+       then #no file in UPLOADDIR
+       break;
+     fi
+       
+   #get device id from filename
+   
+   
+   if lockfile -r 3 -1 "$f".lock
+    then 
+    
+    if [ ! -e "$f" ]
+    then 
+     #this file has been deleted while waiting for the lock
+     continue
+    fi
+       deviceID=`echo $f|sed -e 's/^\([^/]*\/\)//'|cut -d"_" -f1` 
+       #TODO: check for each sensor if sensor is attached to this device.
+       
+       if awk -v deviceID="$deviceID" -e '
+         BEGIN {
+           RS="\n";
+           FS=" ";
+           first=1;
+          }
+          
+         (NF>=3) {
+            for(i=3;i<=NF;i++){
+             if(first==0){
+               printf(",");
+              }else{
+               printf("INSERT INTO Measurement(`TIME`,`Sensor_id`,`val`,`pos`) VALUES\n")
+               first=0;
+               }
+              timestamp=strftime("%Y-%m-%d %H:%M:%S", $1);
+              printf("('\''%s'\'','\''%d'\'','\''%f'\'','\''%d'\'')\n",timestamp,$2,$i,i-2);
+             }
+          printf("\n");
+         }
+         
+         END {printf(";\n");}
+         ' "$f" | mysql -u "$MYSQL_USER" --password="$MYSQL_PASS" -h "$MYSQL_SERVER" "$MYSQL_DB" 
+         then
+          #mysql returned ok
+          #echo "Ok"
+          good=$((good+1))
+          rm -f "$f" #delete data
+          :                                           
+         fi
+         #echo mysql -u "$MYSQL_USER" --password="$MYSQL_PASS" -h "$MYSQL_SERVER" "$MYSQL_DB" 
+                       
+   rm -f "$f".lock #unlock 
+   else
+      #file is locked -> it is still being uploaded
+      echo `date`"ameas data script $$ : file $f locked." >> "$LOGFILE"
+      continue
+   fi 
+  done
+     
+  echo `date`"ameas data script $$ : Inserted $good files." >> "$LOGFILE"
+exit 0

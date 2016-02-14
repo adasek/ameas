@@ -1,0 +1,19 @@
+#Asensor - server scripts
+
+### Installation
+ * Create user ameas
+ * Copy files to ameas home directory
+ * Create directory .ssh  
+ * For every device generate a SSH key pair with:
+```
+dropbearkey -t rsa -f ~/.ssh/id_rsa
+``` 
+ And copy text representation of public key (id_rsa.pub) into amaes user's ~/.ssh/authorized_keys as such:  
+``` 
+no-pty,no-port-forwarding,no-agent-forwarding,no-X11-forwarding,command="~/ameas-server 123" ssh-rsa AAAA...= root@deviceName
+``` 
+123 being the device id.
+
+ * Inside MySQL create database "ameas" and user "ameas" and grant permissions.
+ * Import ameas_database_schema.sql
+ * In script "ameas_data" change configuration of database (MYSQL_SERVER,MYSQL_DB,MYSQL_USER,MYSQL_PASS)  

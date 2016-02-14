@@ -1,0 +1,70 @@
+#!/bin/bash
+#First argument = device id
+
+LOCKFILE1="/tmp/ameas-server.lock"       
+LOGFILE="/tmp/ameas.log"
+UPLOADDIR=/home/ameas/uploaded_files
+AMEASDATA=/home/ameas/ameas-data
+
+
+echo `date`"ameas server side script $$ started." >> "$LOGFILE"
+devID="$1"
+
+case "$devID" in
+    ''|*[!0-9]*)
+     echo "ERR: Wrong device id "\'"$devID"\' >> "$LOGFILE"
+      exit 4
+     ;;
+esac
+         
+
+case "$SSH_ORIGINAL_COMMAND" in
+"scp -t"*) 
+ #Save as some not yet used local data
+  
+  
+   if lockfile -r 5 -1 "$LOCKFILE1"
+    then
+     #we obtained lockfile - critical section1 (with other ameas-server instances)  
+     #determine unique filename 
+ 
+     lastID=`find "$UPLOADDIR"/"$devID"_*.data -printf "%f\n"|sed -e 's/\.data//' -e 's/^[0-9]*_//'|grep -v '[^0-9]'|sort -n|tail -n 1`    
+#     lastID=`echo "$UPLOADDIR"/"$devID"_*.data |sed -e 's/'"$UPLOADDIR"'\/'"$devID"'_\([0-9]*\)\.data$/\1/'|grep -v '[^0-9]' | sort -n |tail -n 1`
+     echo `date`"ameas server side script $$ : lastID=$lastID" >> "$LOGFILE"   
+     uniq=`expr $lastID + 1`        
+     echo `date`"ameas server side script $$ : uniq=$uniq" >> "$LOGFILE"   
+        
+     touch "$UPLOADDIR"/"$1"_"$uniq".data   
+     rm -f "$LOCKFILE1" #end of critical section1 (with other ameas-server instances)  
+     scp -t "$UPLOADDIR"/tmp_"$1"_"$uniq".data 
+      
+     if [ "$?" -ne 0 ]  #check scp return code
+      then         
+      echo `date`"ameas server side script $$ returned 2" >> "$LOGFILE"   
+      exit 2 #scp failed
+     fi
+     
+  
+   mv "$UPLOADDIR"/tmp_"$1"_"$uniq".data "$UPLOADDIR"/"$1"_"$uniq".data   
+   rm -f  "$UPLOADDIR"/"$1"_"$uniq".data.lock #end of ameas-data critical section
+   
+     
+      echo `date`"ameas server side script $$ returned 0" >> "$LOGFILE"       
+     $AMEASDATA 2> /home/ameas/ameas-data.err.log
+     exit 0 #everything went smoothly     
+     
+    else  
+     echo `date`" - lockfile could not be obtained for device $devID" >> "$LOGFILE" 
+      echo `date`"ameas server side script $$ returned 3" >> "$LOGFILE"   
+     exit 3 #lockfile could not be obtained
+    fi
+;;
+*)                
+ echo `date`"ameas server side script $$ returned 4" >> "$LOGFILE"   
+ exit 4 #Not permited command
+;;
+esac
+
+echo `date`"ameas server side script $$ returned 1" >> "$LOGFILE"   
+exit 1 #should not get here
+
