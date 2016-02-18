@@ -1,5 +1,5 @@
 /* 
- * Author: Adam Benda<bendaad1@fit.cvut.cz>
+ * Author: Adam Benda<adam@adasek.cz>, 2016
  * 
  * @classdesc Represents a plot of one or more SensorDataSet
  * 

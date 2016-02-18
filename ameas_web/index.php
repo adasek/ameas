@@ -1,4 +1,9 @@
 <?php
+/*
+ * Main entry point of the web application
+ *
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
 include_once('config.php');
 include_once('include/connection.php');

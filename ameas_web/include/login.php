@@ -1,4 +1,9 @@
 <?php
+/*
+ * Login-related stuff
+ *
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
 /*
   After including this, next variables are set:

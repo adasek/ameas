@@ -1,4 +1,9 @@
 <?php
+/*
+ * Create mysql connection
+ *
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
 $mysqli = new mysqli($mysql_server, $mysql_login, $mysql_pass, $mysql_db);
 

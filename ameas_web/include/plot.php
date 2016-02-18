@@ -1,6 +1,9 @@
 <?php
-
-/* Table of Devices and sensors. */
+/*
+ * Showing plot for specific sensor+value
+ *
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
 
 if (is_numeric($_GET['id'])) {

@@ -1,5 +1,5 @@
 /* 
- * Author: Adam Benda<bendaad1@fit.cvut.cz>
+ * Author: Adam Benda<adam@adasek.cz>, 2016
  * 
  * @classdesc Represents subset of data. Contains actual measurement data.
  * 

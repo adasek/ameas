@@ -1,5 +1,8 @@
 <?php
-/* Table of Devices and sensors. */
+/* 
+ * Table of Devices and sensors. 
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
  //We need table of Devices and adjactment Sensors which do we have rights to 
  $select="SELECT *,has_rights_to.type AS rights,Sensor.name AS sensor_name,SensorType.name AS sensor_type_name FROM Device RIGHT OUTER JOIN Sensor ON Device.id=Sensor.Device_id  JOIN SensorType on SensorType_id = SensorType.id  JOIN has_rights_to ON Sensor.id=has_rights_to.Sensor_id  WHERE has_rights_to.User_id=".$logged_user." AND has_rights_to.type>0";

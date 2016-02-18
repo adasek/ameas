@@ -1,11 +1,11 @@
 <?php
-
 /*
  *
  * List of all sensors for specified device
- * in /root/sensors.txt format
+ * in the same format as the device package ameas uses (sensor.txt)
  *
  *
+ * Author: Adam Benda <adam@adasek.cz>, 2016
  */
 
 require_once("config.php");

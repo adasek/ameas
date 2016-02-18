@@ -1,3 +1,9 @@
+/*
+ * Interfacing D3 library and generating plot
+ *
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
+
 svg = null;
 line = null;
 xaxis = null;

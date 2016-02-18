@@ -1,5 +1,9 @@
 <?php
-/* Table of Devices and sensors. */
+/*
+ * Table of different measured values from all sensors.
+
+ * Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
  //We need table of Devices and adjactment Sensors which do we have rights to 
  $select="SELECT 

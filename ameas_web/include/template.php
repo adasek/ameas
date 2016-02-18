@@ -1,7 +1,10 @@
 <?php 
 /* 
-Template is in design/template.htm
- We get that and substitute something there.
+ * Template is in design/template.htm
+ * This script substitutes some variables there. 
+ *
+* Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 */
 
 $data=file_get_contents('design/template.htm');

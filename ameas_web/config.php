@@ -1,4 +1,10 @@
 <?php
+/*
+Configuration file for the web
+
+
+Author: Adam Benda <adam@adasek.cz>, 2016
+*/
 
   $BASEHREF="http://adasek.cz/ameas/";
   
@@ -8,7 +14,4 @@
   $mysql_pass="";
   $mysql_db="ameas";
   
-  
-  
-
 ?>

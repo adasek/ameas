@@ -1,5 +1,10 @@
 <?php
+/*
+ Data service - generating datasets for authenticated users
 
+ Author: Adam Benda <adam@adasek.cz>, 2016
+
+*/
 header('Content-Type: application/json');
 
 include_once('config.php');
