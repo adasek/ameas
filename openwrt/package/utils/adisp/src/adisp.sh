@@ -50,7 +50,7 @@ elif [ -r "$PLUGIN_DIR"/"$cmd" ]
    secondLine=`echo "$output"|head -n 2|tail -n 1` #get second line
     
     #show on display
-    if $LCD_BIN 2 "$firstLine                    " "$secondLine                    "
+    if $LCD_BIN 2 "$firstLine" "$secondLine"
        then
        :
        else
