@@ -5,7 +5,6 @@
  *
 * Author: Adam Benda <adam@adasek.cz>, 2016
 */
-*/
 
 $data=file_get_contents('design/template.htm');
 
