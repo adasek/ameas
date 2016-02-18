@@ -5,7 +5,6 @@
  * 
  * Author: Adam Benda, 2016
  * License: creative commons license 3.0 Attribution-ShareAlike CC BY-SA
- * https://github.com/adasek/ameas/
  * 
  * Usage:
  *  /sbin/lcd1602 [command] [line1] [line2]
@@ -47,6 +46,9 @@ int main(int argc, char * * argv) {
         return 0;
     }
 
+int timeLimit=10; //in seconds
+int timeElapsed=0; //in useconds
+
     uint8_t pins[7] = {2, 3, 0};
 
     //This order was fun to determine.
@@ -68,29 +70,23 @@ int main(int argc, char * * argv) {
 
             lcd.internalBegin(16, 2);
 
-            //lcd.cursor();
-            char showLine1[17];
-            showLine1[16] = (char) 0;
-            int i_low = 0;
-            int i_high = 0;
-            while (true) {
-                if ((int) argv[2][i_high] == 0) {
-                    //end of string
-                    break;
-                }
-                ++i_high;
-                if (i_high - i_low > 16) { //visible symbols number
-                    ++i_low;
-                }
-
+		lcd.clear();
                 lcd.display();
                 lcd.home();
                 lcd.setCursor(0, 0);
+		 
+		int lenMax=16; 
+		if(strlen(argv[2])>lenMax){
+			lenMax=strlen(argv[2]);
+			}
+		if(strlen(argv[3])>lenMax){
+			lenMax=strlen(argv[3]);
+			}
 
-                mempcpy(showLine1, &(argv[2][i_low]),16);
-               lcd.print(showLine1);
-                usleep(10000);
-            }
+               lcd.print(argv[2]);
+
+		int line1Size=strlen(argv[2]);
+
 
             if (cmd == 2) {
 
@@ -101,8 +97,26 @@ int main(int argc, char * * argv) {
                 }
 
                 lcd.setCursor(0, 1);
+	
                 lcd.print(argv[3]);
+
             }
+
+                usleep(2000000);
+		timeElapsed+=2000000;
+	//Now scroll
+            while (true) {
+		if(lenMax>16){
+		 lcd.scrollDisplayLeft();
+		}
+                 usleep(timeLimit*1000*1000/lenMax);
+		timeElapsed+=timeLimit*1000*1000/lenMax;
+		if(timeElapsed>timeLimit*1000*1000){
+			//fun is over
+			break;
+		}
+            }
+
         } else if (cmd == 3) {
             lcd.internalBegin(16, 2);
             lcd.setBacklight(LOW, 1);
