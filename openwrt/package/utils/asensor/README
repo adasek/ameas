@@ -1,0 +1,75 @@
+ASENSOR package
+------------------
+Utilities to measure and control different sensors.
+
+Installation:
+-------------
+1) Prepare your OpenWRT build system
+2) Copy asensor directory to [build_system_root]/package/utils/
+3) make menuconfig and include <*> "Utilities > asensor" to the firmware
+4) make firmware and flash it to the router
+
+Usage:
+----------
+You may use programs separately for measuring and/or schedule measuring through measure.sh batch.
+
+Using separately
+=================
+/sbin/beep_gpio [pinNumber] [time of 1 in useconds] [time of 0 in useconds]
+(BETA) Use piezo buzzer connected to GPIO.
+Modify sound frequency by modifiing arg2 and arg3
+
+/sbin/measure_analog [gpioPin]
+(BETA) Simple A/D converter by measuring time till the condensator has charge.
+See http://www.raspberrypi-spy.co.uk/2012/08/reading-analogue-sensors-with-one-gpio-pin/ 
+It may not work.
+
+/sbin/measure_bh1750fvi
+Get value from the BG1750FVI light sensor. Output is in lux. Device should be connected through the I2C bus 0 on the default address 0x23
+
+/sbin/measure_bmp180 [Altitude]
+Get value from the BMP180 air pressure sensor.
+BMP180 should be connected via I2C.
+Outputs air pressure in hPa and temperature.
+Use arg1 to normalize value for the ocean level.
+
+/sbin/measure_dalas [sensorID]
+Measure DS18S20 sensor connected through 1-wire
+After succesfull sensor connection and driver installation
+you should have file /sys/bus/w1/devices/[sensorID]/w1_slave
+Use that sensorID as arg1.
+
+/sbin/measure_dht11 [pinNumber]
+Measure value of DHT11 humidity+temp sensor
+The most funky program, as it depends on not being interrupted when communicating.
+arg1 is GPIO pin number.
+
+/sbin/measure_dht22 [pinNumber]
+Same program for measuring DHT22 sensor
+
+/sbin/measure_pcf8591 [pin]
+Measure I2C A/D converter PCF8591
+pin is the pin of PCF8591 - A0=0, A1=1, A2=2, A3=3
+Device should be connected via I2C bus0 with default addr 0x48
+
+/sbin/milisleep [value]
+Tool for sleeping for given amount of miliseconds
+
+
+Schedule measuring and data upload:
+===================================
+1 [device]) Create sensor list (default location: /root/sensor.txt) with lines in format:
+[SensorID]|[Full command to measure]
+(this file should end with a newline)
+
+2 [device]) Create your device SSH key with "dropbearkey -t rsa -f ~/.ssh/id_rsa"
+
+3 [server]) Install Server part of ameas, create database.
+4 [server]) Create database entry for the device and your sensors
+5 [server]) Insert your public ssh key to the Server parts user (ameas) file ~/.ssh/authorized_keys - add line:
+no-pty,no-port-forwarding,no-agent-forwarding,no-X11-forwarding,command="~/ameas-server [deviceID]" ssh-rsa AAAA... user@deviceName
+6 [device]) Check that you have cron installed and running and ameas entry is in the crontab
+7 [device]) Configure /sbin/upload.sh - add your server address (or create entry in hosts for "server.ameas" in /etc/hosts
+
+
+
